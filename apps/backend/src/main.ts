@@ -22,14 +22,14 @@ async function bootstrap() {
     .setDescription('The crud API description')
     .setVersion('1.0')
     .setBasePath('api')
-    .addTag('crud Application Mikro orm Postgres')
+    .addTag('nx nests react Mikro orm Postgres')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   // generate file openApi.json
   if (process.argv.find((arg) => arg === '--generate-openapi')) {
     const outputPath = path.resolve(
       process.cwd(),
-      './apps/nestjs-mikro-postgres/openApi.json'
+      './apps/backend/openApi.json'
     );
     writeFileSync(outputPath, JSON.stringify(document), { encoding: 'utf8' });
     await app.close();
@@ -40,10 +40,10 @@ async function bootstrap() {
   if (process.argv.find((arg) => arg === '--generate-client')) {
     try {
       execSync(
-        'npx openapi-generator-cli generate -i apps/nestjs-mikro-postgres/openapi.json -g csharp -o libs/clients/nestjs-mikro-postgres-client-csharp'
+        'npx openapi-generator-cli generate -i apps/backend/openapi.json -g csharp -o libs/clients/nestjs-mikro-postgres-client-csharp'
       );
       execSync(
-        'npx openapi-generator-cli generate -i apps/nestjs-mikro-postgres/openapi.json -g typescript-fetch -o libs/clients/nestjs-mikro-postgres-client-typescript'
+        'npx openapi-generator-cli generate -i apps/backend/openapi.json -g typescript-fetch -o libs/clients/nestjs-mikro-postgres-client-typescript'
       );
       Logger.log('🚀 TypeScript and C# client generated successfully!');
       process.exit();
