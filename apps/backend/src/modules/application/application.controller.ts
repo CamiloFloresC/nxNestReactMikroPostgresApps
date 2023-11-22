@@ -22,7 +22,8 @@ import {
 } from './openAPI-decorators';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetApplicationDto } from './dto/get-application.dto';
-import { AddGroupDto } from './dto/add-group.dto';
+import { GroupIdDto } from './dto/group-id.dto';
+import { findByGroupIdOpenAPI } from './openAPI-decorators/findByGroupId';
 
 @ApiTags('application')
 @Controller('application')
@@ -49,6 +50,14 @@ export class ApplicationController {
     return this.applicationService.findOne(id);
   }
 
+  @findByGroupIdOpenAPI()
+  @Get('group/:id')
+  findOneByGroupId(
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<GetApplicationDto[]> {
+    return this.applicationService.findOneByGroupId(id);
+  }
+
   @updateOpenAPI()
   @Patch(':id')
   update(
@@ -68,8 +77,8 @@ export class ApplicationController {
   @Patch('group/:id')
   addGroup(
     @Param('id') id: number,
-    @Body() addGroupDto: AddGroupDto
+    @Body() groupIdDto: GroupIdDto
   ): Promise<SuccessResponseDto> {
-    return this.applicationService.addGroup(id, addGroupDto.id);
+    return this.applicationService.addGroup(id, groupIdDto.id);
   }
 }

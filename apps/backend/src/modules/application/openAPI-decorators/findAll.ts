@@ -12,7 +12,7 @@ export function findAllOpenAPI() {
     ApiResponse({
       status: 200,
       description: 'find all application',
-      type: GetApplicationDto,
+      type: [GetApplicationDto],
     }),
     ApiNotFoundResponse({
       status: 404,

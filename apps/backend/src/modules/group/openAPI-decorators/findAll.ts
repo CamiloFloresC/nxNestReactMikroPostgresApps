@@ -12,7 +12,7 @@ export function findAllOpenAPI() {
     ApiCreatedResponse({
       status: 200,
       description: 'find all group',
-      type: GetGroupDto,
+      type: [GetGroupDto],
     }),
     ApiNotFoundResponse({
       status: 404,

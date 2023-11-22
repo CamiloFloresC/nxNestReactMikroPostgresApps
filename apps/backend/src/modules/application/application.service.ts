@@ -97,6 +97,23 @@ export class ApplicationService {
     }
   }
 
+  async findOneByGroupId(idGroup: number): Promise<GetApplicationDto[]> {
+    try {
+      const applications = await this.appRepository.find({
+        group: idGroup,
+      });
+      if (!applications) {
+        throw new NotFoundException('List of apps not found');
+      }
+      return applications;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(error);
+    }
+  }
+
   async update(
     id: number,
     updateApplicationDto: UpdateApplicationDto

@@ -3,7 +3,7 @@ import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { BadRequestExceptionDto } from '../../../dto/BadRequestException.dto';
 import { NotFoundExceptionDto } from '../../../dto/NotFoundException.dto';
 import { SuccessResponseDto } from '../../../dto/success-response.dto';
-import { AddGroupDto } from '../dto/add-group.dto';
+import { GroupIdDto } from '../dto/group-id.dto';
 
 export function addGroupOpenAPI() {
   return applyDecorators(
@@ -13,7 +13,7 @@ export function addGroupOpenAPI() {
       description: 'id Application',
     }),
     ApiBody({
-      type: AddGroupDto,
+      type: GroupIdDto,
       description: 'id Group',
     }),
     ApiResponse({

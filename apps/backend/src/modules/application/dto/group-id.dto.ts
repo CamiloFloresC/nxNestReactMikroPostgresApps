@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsPositive } from 'class-validator';
 
-export class AddGroupDto {
+export class GroupIdDto {
   @ApiProperty()
   @IsNumber()
   @IsPositive()
