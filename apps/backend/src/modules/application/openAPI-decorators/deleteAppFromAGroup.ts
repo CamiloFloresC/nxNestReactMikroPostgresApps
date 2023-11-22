@@ -9,7 +9,7 @@ export function deleteAppFromAGroupOpenAPI() {
   return applyDecorators(
     ApiParam({
       name: 'id',
-      type: 'number',
+      type: 'string',
       description: 'id Application',
     }),
     ApiBody({

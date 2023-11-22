@@ -9,7 +9,7 @@ export function updateOpenAPI() {
   return applyDecorators(
     ApiParam({
       name: 'id',
-      type: 'number',
+      type: 'string',
     }),
     ApiBody({
       type: UpdateApplicationDto,

@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -41,14 +40,14 @@ export class GroupController {
 
   @findOneOpenAPI()
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<GetGroupDto> {
+  findOne(@Param('id') id: string): Promise<GetGroupDto> {
     return this.groupService.findOne(id);
   }
 
   @updateOpenAPI()
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateGroupDto: UpdateGroupDto
   ): Promise<SuccessResponseDto> {
     return this.groupService.update(id, updateGroupDto);
@@ -56,7 +55,7 @@ export class GroupController {
 
   @deleteOpenAPI()
   @Delete(':id')
-  delete(@Param('id', ParseIntPipe) id: number): Promise<SuccessResponseDto> {
+  delete(@Param('id') id: string): Promise<SuccessResponseDto> {
     return this.groupService.remove(id);
   }
 }

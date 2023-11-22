@@ -82,7 +82,7 @@ export class ApplicationService {
     }
   }
 
-  async findOne(id: number): Promise<GetApplicationDto> {
+  async findOne(id: string): Promise<GetApplicationDto> {
     try {
       const application = await this.appRepository.findOne(id);
       if (!application) {
@@ -97,7 +97,7 @@ export class ApplicationService {
     }
   }
 
-  async findOneByGroupId(idGroup: number): Promise<GetApplicationDto[]> {
+  async findOneByGroupId(idGroup: string): Promise<GetApplicationDto[]> {
     try {
       const applications = await this.appRepository.find({
         group: idGroup,
@@ -115,7 +115,7 @@ export class ApplicationService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateApplicationDto: UpdateApplicationDto
   ): Promise<SuccessResponseDto> {
     try {
@@ -151,7 +151,7 @@ export class ApplicationService {
     }
   }
 
-  async remove(id: number): Promise<SuccessResponseDto> {
+  async remove(id: string): Promise<SuccessResponseDto> {
     try {
       const application = await this.appRepository.findOne(id);
       if (!application) {
@@ -171,8 +171,8 @@ export class ApplicationService {
   }
 
   async addGroup(
-    idApplication: number,
-    idGroup: number
+    idApplication: string,
+    idGroup: string
   ): Promise<SuccessResponseDto> {
     try {
       const application = await this.appRepository.findOne(idApplication);
@@ -202,8 +202,8 @@ export class ApplicationService {
   }
 
   async deleteAppFromAGroup(
-    idApplication: number,
-    idGroup: number
+    idApplication: string,
+    idGroup: string
   ): Promise<SuccessResponseDto> {
     try {
       const application = await this.appRepository.findOne(idApplication);

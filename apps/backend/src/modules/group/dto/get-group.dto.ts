@@ -2,7 +2,7 @@ import { ApiResponseProperty } from '@nestjs/swagger';
 
 export class GetGroupDto {
   @ApiResponseProperty()
-  id: number;
+  id: string;
   @ApiResponseProperty()
   name: string;
   @ApiResponseProperty()

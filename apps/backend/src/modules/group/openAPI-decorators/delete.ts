@@ -12,7 +12,7 @@ export function deleteOpenAPI() {
   return applyDecorators(
     ApiParam({
       name: 'id',
-      type: 'number',
+      type: 'string',
     }),
     ApiOkResponse({
       status: 200,

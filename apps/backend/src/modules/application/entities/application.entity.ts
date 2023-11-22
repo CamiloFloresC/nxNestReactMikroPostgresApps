@@ -4,13 +4,15 @@ import {
   ManyToOne,
   PrimaryKey,
   Property,
+  Ref,
 } from '@mikro-orm/core';
 import { Group } from '../../group/entities/group.entity';
+import { v4 } from 'uuid';
 
 @Entity()
 export class Application {
-  @PrimaryKey({ autoincrement: true })
-  id: number;
+  @PrimaryKey()
+  id: string = v4();
 
   @Property({ unique: true })
   name: string;
@@ -34,5 +36,5 @@ export class Application {
   @ManyToOne(() => Group, {
     cascade: [Cascade.ALL],
   })
-  group?: Group;
+  group?: Ref<Group>;
 }

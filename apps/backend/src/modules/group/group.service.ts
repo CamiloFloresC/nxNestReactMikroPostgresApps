@@ -71,7 +71,7 @@ export class GroupService {
     }
   }
 
-  async findOne(id: number): Promise<GetGroupDto> {
+  async findOne(id: string): Promise<GetGroupDto> {
     try {
       const group = await this.groupRepository.findOne(id);
       if (!group) {
@@ -87,7 +87,7 @@ export class GroupService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateGroupDto: UpdateGroupDto
   ): Promise<SuccessResponseDto> {
     try {
@@ -122,7 +122,7 @@ export class GroupService {
     }
   }
 
-  async remove(id: number): Promise<SuccessResponseDto> {
+  async remove(id: string): Promise<SuccessResponseDto> {
     try {
       const group = await this.groupRepository.findOne(id);
       if (!group) {

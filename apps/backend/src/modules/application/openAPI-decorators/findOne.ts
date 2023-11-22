@@ -12,7 +12,7 @@ export function findOneOpenAPI() {
   return applyDecorators(
     ApiParam({
       name: 'id',
-      type: 'number',
+      type: 'string',
     }),
     ApiResponse({
       status: 200,

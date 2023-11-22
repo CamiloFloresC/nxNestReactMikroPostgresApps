@@ -7,12 +7,12 @@ import {
   Property,
 } from '@mikro-orm/core';
 import { Application } from '../../application/entities/application.entity';
+import { v4 } from 'uuid';
 
 @Entity()
 export class Group {
-  @PrimaryKey({ autoincrement: true })
-  id: number;
-
+  @PrimaryKey()
+  id: string = v4();
   @Property({ unique: true })
   name: string;
 

@@ -7,7 +7,7 @@ export function findByGroupIdOpenAPI() {
   return applyDecorators(
     ApiParam({
       name: 'id',
-      type: 'number',
+      type: 'string',
       description: 'id group',
     }),
     ApiResponse({
