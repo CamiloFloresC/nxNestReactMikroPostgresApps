@@ -24,6 +24,7 @@ import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetApplicationDto } from './dto/get-application.dto';
 import { GroupIdDto } from './dto/group-id.dto';
 import { findByGroupIdOpenAPI } from './openAPI-decorators/findByGroupId';
+import { deleteAppFromAGroupOpenAPI } from './openAPI-decorators/deleteAppFromAGroup';
 
 @ApiTags('application')
 @Controller('application')
@@ -69,8 +70,17 @@ export class ApplicationController {
 
   @deleteOpenAPI()
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<SuccessResponseDto> {
+  delete(@Param('id', ParseIntPipe) id: number): Promise<SuccessResponseDto> {
     return this.applicationService.remove(id);
+  }
+
+  @deleteAppFromAGroupOpenAPI()
+  @Delete('group/:id')
+  deleteAppFromAGroup(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() groupIdDto: GroupIdDto
+  ): Promise<SuccessResponseDto> {
+    return this.applicationService.deleteAppFromAGroup(id, groupIdDto.id);
   }
 
   @addGroupOpenAPI()

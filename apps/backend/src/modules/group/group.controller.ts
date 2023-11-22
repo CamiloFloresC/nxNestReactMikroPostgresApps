@@ -56,7 +56,7 @@ export class GroupController {
 
   @deleteOpenAPI()
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<SuccessResponseDto> {
+  delete(@Param('id', ParseIntPipe) id: number): Promise<SuccessResponseDto> {
     return this.groupService.remove(id);
   }
 }

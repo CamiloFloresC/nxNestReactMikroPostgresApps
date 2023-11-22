@@ -200,4 +200,38 @@ export class ApplicationService {
       throw new Error(error);
     }
   }
+
+  async deleteAppFromAGroup(
+    idApplication: number,
+    idGroup: number
+  ): Promise<SuccessResponseDto> {
+    try {
+      const application = await this.appRepository.findOne(idApplication);
+      if (!application) {
+        throw new NotFoundException('app not found');
+      }
+      if (application.group.id !== idGroup) {
+        throw new NotFoundException('group not found');
+      }
+      try {
+        await this.appRepository.nativeUpdate(idApplication, {
+          group: null,
+        });
+      } catch (error) {
+        throw new BadRequestException(error.message);
+      }
+      return {
+        message: 'Successfully delete Group',
+        status: 200,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new Error(error);
+    }
+  }
 }
