@@ -13,17 +13,21 @@ export class Group {
   @PrimaryKey({ autoincrement: true })
   id: number;
 
-  @Property()
+  @Property({ unique: true })
   name: string;
 
   @Property()
   description: string;
 
-  @Property({ type: 'date' })
-  createdAt = new Date();
+  @Property({ type: 'date', onCreate: () => new Date() })
+  createdAt: Date;
 
-  @Property({ type: 'date', onUpdate: () => new Date() })
-  updatedAt = new Date();
+  @Property({
+    type: 'date',
+    onUpdate: () => new Date(),
+    onCreate: () => new Date(),
+  })
+  updatedAt: Date;
 
   @OneToMany(() => Application, (a) => a.group, {
     cascade: [Cascade.ALL],
