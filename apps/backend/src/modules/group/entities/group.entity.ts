@@ -24,7 +24,6 @@ export class Group {
 
   @Property({
     type: 'date',
-    onUpdate: () => new Date(),
     onCreate: () => new Date(),
   })
   updatedAt: Date;

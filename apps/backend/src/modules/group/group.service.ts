@@ -106,13 +106,14 @@ export class GroupService {
       await this.groupRepository.nativeUpdate(id, {
         description: updateGroupDto.description,
         name: updateGroupDto.name,
+        updatedAt: new Date(),
       });
       return {
         message: 'Successfully update',
         status: 200,
       };
     } catch (error) {
-      if (error instanceof BadRequestException) {
+      if (error instanceof NotFoundException) {
         throw error;
       }
       if (error instanceof BadRequestException) {

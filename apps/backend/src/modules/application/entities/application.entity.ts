@@ -25,7 +25,6 @@ export class Application {
 
   @Property({
     type: 'date',
-    onUpdate: () => new Date(),
     onCreate: () => new Date(),
   })
   updatedAt: Date;

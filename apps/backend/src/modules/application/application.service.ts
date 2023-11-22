@@ -134,7 +134,7 @@ export class ApplicationService {
       await this.appRepository.nativeUpdate(id, {
         description: updateApplicationDto.description,
         name: updateApplicationDto.name,
-        client_id: updateApplicationDto.client_id,
+        updatedAt: new Date(),
       });
       return {
         message: 'Successfully update',
@@ -210,8 +210,15 @@ export class ApplicationService {
       if (!application) {
         throw new NotFoundException('app not found');
       }
-      if (application.group.id !== idGroup) {
-        throw new NotFoundException('group not found');
+      if (application.group === null) {
+        throw new NotFoundException(
+          'this application doesnot belong to a group'
+        );
+      }
+      if (application.group.id != idGroup) {
+        throw new NotFoundException(
+          'this application does not belong to the group'
+        );
       }
       try {
         await this.appRepository.nativeUpdate(idApplication, {

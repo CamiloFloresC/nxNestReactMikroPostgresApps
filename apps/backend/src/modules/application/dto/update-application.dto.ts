@@ -1,15 +1,13 @@
-import { IsOptional } from 'class-validator';
-import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { CreateApplicationDto } from './create-application.dto';
+import { IsOptional, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class UpdateApplicationDto extends PartialType(CreateApplicationDto) {
+export class UpdateApplicationDto {
   @IsOptional()
   @ApiPropertyOptional()
+  @IsString()
   name: string;
   @IsOptional()
   @ApiPropertyOptional()
-  client_id: string;
-  @IsOptional()
-  @ApiPropertyOptional()
+  @IsString()
   description: string;
 }
