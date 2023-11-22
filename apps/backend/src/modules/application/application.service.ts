@@ -9,6 +9,8 @@ import { Application } from './entities/application.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import { SuccessResponseDto } from '../../dto/success-response.dto';
+import { GetApplicationDto } from './dto/get-application.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -18,7 +20,9 @@ export class ApplicationService {
     private readonly em: EntityManager
   ) {}
 
-  async create(createApplicationDto: CreateApplicationDto) {
+  async create(
+    createApplicationDto: CreateApplicationDto
+  ): Promise<SuccessResponseDto> {
     try {
       if (!createApplicationDto.client_id) {
         throw new BadRequestException('client_id is required');
@@ -42,7 +46,11 @@ export class ApplicationService {
         throw new BadRequestException('Error creating application');
       }
 
-      await this.em.persist(create).flush();
+      try {
+        await this.em.persist(create).flush();
+      } catch (error) {
+        throw new BadRequestException(error.message);
+      }
 
       return {
         message: 'Successfully created',
@@ -50,16 +58,16 @@ export class ApplicationService {
       };
     } catch (error) {
       if (error instanceof ConflictException) {
-        throw new ConflictException(error.message);
+        throw error;
       }
       if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
+        throw error;
       }
       throw new Error(error.message);
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<GetApplicationDto[]> {
     try {
       const applications = await this.appRepository.findAll();
       if (!applications) {
@@ -67,11 +75,14 @@ export class ApplicationService {
       }
       return applications;
     } catch (error) {
-      throw new NotFoundException(error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(error);
     }
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<GetApplicationDto> {
     try {
       const application = await this.appRepository.findOne(id);
       if (!application) {
@@ -79,28 +90,97 @@ export class ApplicationService {
       }
       return application;
     } catch (error) {
-      throw new NotFoundException(error.message);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(error);
     }
   }
 
-  update(id: number, updateApplicationDto: UpdateApplicationDto) {
+  async update(
+    id: number,
+    updateApplicationDto: UpdateApplicationDto
+  ): Promise<SuccessResponseDto> {
     try {
-      this.appRepository.nativeUpdate(id, {
+      const application = await this.appRepository.findOne(id);
+      if (!application) {
+        throw new NotFoundException('app not found');
+      }
+
+      if (!updateApplicationDto.name) {
+        throw new BadRequestException('name is required');
+      }
+
+      if (!updateApplicationDto.description) {
+        throw new BadRequestException('description is required');
+      }
+      await this.appRepository.nativeUpdate(id, {
         description: updateApplicationDto.description,
         name: updateApplicationDto.name,
         client_id: updateApplicationDto.client_id,
       });
-      return this.appRepository.findOne(id);
+      return {
+        message: 'Successfully update',
+        status: 200,
+      };
     } catch (error) {
-      return new BadRequestException(error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new Error(error);
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<SuccessResponseDto> {
     try {
-      return await this.em.getRepository(Application).nativeDelete(id);
+      const application = await this.appRepository.findOne(id);
+      if (!application) {
+        throw new NotFoundException('app not found');
+      }
+      await this.em.getRepository(Application).nativeDelete(id);
+      return {
+        message: 'Successfully delete',
+        status: 200,
+      };
     } catch (error) {
-      return new BadRequestException(error);
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(error);
+    }
+  }
+
+  async addGroup(
+    idApplication: number,
+    idGroup: number
+  ): Promise<SuccessResponseDto> {
+    try {
+      const application = await this.appRepository.findOne(idApplication);
+      if (!application) {
+        throw new NotFoundException('app not found');
+      }
+      try {
+        await this.appRepository.nativeUpdate(idApplication, {
+          group: idGroup,
+        });
+      } catch (error) {
+        throw new BadRequestException(error.message);
+      }
+      return {
+        message: 'Successfully add Group',
+        status: 200,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new Error(error);
     }
   }
 }

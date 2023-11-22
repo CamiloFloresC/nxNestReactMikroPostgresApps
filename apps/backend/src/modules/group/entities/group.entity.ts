@@ -1,14 +1,15 @@
 import {
   Cascade,
+  Collection,
   Entity,
-  ManyToOne,
+  OneToMany,
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
-import { Group } from '../../group/entities/group.entity';
+import { Application } from '../../application/entities/application.entity';
 
 @Entity()
-export class Application {
+export class Group {
   @PrimaryKey({ autoincrement: true })
   id: number;
 
@@ -24,11 +25,8 @@ export class Application {
   @Property({ type: 'date', onUpdate: () => new Date() })
   updatedAt = new Date();
 
-  @Property()
-  client_id: string;
-
-  @ManyToOne(() => Group, {
+  @OneToMany(() => Application, (a) => a.group, {
     cascade: [Cascade.ALL],
   })
-  group?: Group;
+  applications = new Collection<Application>(this);
 }

@@ -1,6 +1,6 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
 
-export class SuccessApplicationDto {
+export class SuccessResponseDto {
   @ApiResponseProperty()
   message: string;
   @ApiResponseProperty()

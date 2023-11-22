@@ -1,5 +1,6 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
-export class GetApplicationDto {
+
+export class GetGroupDto {
   @ApiResponseProperty()
   id: number;
   @ApiResponseProperty()
@@ -10,6 +11,4 @@ export class GetApplicationDto {
   createdAt: Date;
   @ApiResponseProperty({ type: Date })
   updatedAt: Date;
-  @ApiResponseProperty()
-  client_id: string;
 }
