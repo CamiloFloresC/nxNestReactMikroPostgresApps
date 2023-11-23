@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
 import { ApplicationService } from './application.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
@@ -24,8 +25,10 @@ import { GetApplicationDto } from './dto/get-application.dto';
 import { GroupIdDto } from './dto/group-id.dto';
 import { findByGroupIdOpenAPI } from './openAPI-decorators/findByGroupId';
 import { deleteAppFromAGroupOpenAPI } from './openAPI-decorators/deleteAppFromAGroup';
+import { HttpExceptionFilter } from '../../filters/HttpException.filter';
 
 @ApiTags('application')
+@UseFilters(HttpExceptionFilter)
 @Controller('application')
 export class ApplicationController {
   constructor(private readonly applicationService: ApplicationService) {}

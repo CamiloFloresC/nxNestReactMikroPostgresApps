@@ -8,8 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { CreateApplicationDto } from '../dto/create-application.dto';
 import { SuccessResponseDto } from '../../../dto/success-response.dto';
-import { BadRequestExceptionDto } from '../../../dto/BadRequestException.dto';
-import { ConflictExceptionDto } from '../../../dto/ConflictException.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function createOpenAPI() {
   return applyDecorators(
@@ -22,12 +21,12 @@ export function createOpenAPI() {
     ApiBadRequestResponse({
       status: 400,
       description: 'BadRequestException',
-      type: BadRequestExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiConflictResponse({
       status: 409,
       description: 'ConflictException',
-      type: ConflictExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({ operationId: 'createApplication', summary: 'Create App' })
   );

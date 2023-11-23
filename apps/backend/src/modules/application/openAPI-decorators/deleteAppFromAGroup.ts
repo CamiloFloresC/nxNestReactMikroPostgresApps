@@ -1,9 +1,8 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { BadRequestExceptionDto } from '../../../dto/BadRequestException.dto';
-import { NotFoundExceptionDto } from '../../../dto/NotFoundException.dto';
 import { SuccessResponseDto } from '../../../dto/success-response.dto';
 import { GroupIdDto } from '../dto/group-id.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function deleteAppFromAGroupOpenAPI() {
   return applyDecorators(
@@ -24,12 +23,12 @@ export function deleteAppFromAGroupOpenAPI() {
     ApiResponse({
       status: 400,
       description: 'BadRequestException',
-      type: BadRequestExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiResponse({
       status: 404,
       description: 'NotFoundException',
-      type: NotFoundExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({
       operationId: 'deleteAppFromAGroup',

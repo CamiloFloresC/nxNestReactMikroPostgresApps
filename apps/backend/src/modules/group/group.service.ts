@@ -23,13 +23,6 @@ export class GroupService {
   ) {}
   async create(createGroupDto: CreateGroupDto): Promise<SuccessResponseDto> {
     try {
-      if (!createGroupDto.name) {
-        throw new BadRequestException('name is required');
-      }
-
-      if (!createGroupDto.description) {
-        throw new BadRequestException('description is required');
-      }
       const applicationverify = await this.groupRepository.findOne({
         name: createGroupDto.name,
       });

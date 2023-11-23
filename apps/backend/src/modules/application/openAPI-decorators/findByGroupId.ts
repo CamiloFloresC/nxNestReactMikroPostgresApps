@@ -1,7 +1,7 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { NotFoundExceptionDto } from '../../../dto/NotFoundException.dto';
 import { GetApplicationDto } from '../dto/get-application.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function findByGroupIdOpenAPI() {
   return applyDecorators(
@@ -18,7 +18,7 @@ export function findByGroupIdOpenAPI() {
     ApiResponse({
       status: 404,
       description: 'NotFoundException',
-      type: NotFoundExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({
       operationId: 'findByGroupId',

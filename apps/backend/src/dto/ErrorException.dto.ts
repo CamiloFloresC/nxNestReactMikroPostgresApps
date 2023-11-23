@@ -1,10 +1,12 @@
 import { ApiResponseProperty } from '@nestjs/swagger';
 
-export class NotFoundExceptionDto {
+export class ErrorExecptionDto {
   @ApiResponseProperty()
-  message: string;
+  statusCode: number;
   @ApiResponseProperty()
   error: string;
   @ApiResponseProperty()
-  status: number;
+  timestamp: string;
+  @ApiResponseProperty()
+  path: string;
 }

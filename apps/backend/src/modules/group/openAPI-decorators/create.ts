@@ -7,9 +7,8 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from '../../../dto/success-response.dto';
-import { BadRequestExceptionDto } from '../../../dto/BadRequestException.dto';
-import { ConflictExceptionDto } from '../../../dto/ConflictException.dto';
 import { CreateGroupDto } from '../dto/create-group.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function createOpenAPI() {
   return applyDecorators(
@@ -22,12 +21,12 @@ export function createOpenAPI() {
     ApiBadRequestResponse({
       status: 400,
       description: 'BadRequestException',
-      type: BadRequestExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiConflictResponse({
       status: 409,
       description: 'ConflictException',
-      type: ConflictExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({ operationId: 'createGroup', summary: 'Create Group' })
   );

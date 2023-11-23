@@ -5,7 +5,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { GetApplicationDto } from '../dto/get-application.dto';
-import { NotFoundExceptionDto } from '../../../dto/NotFoundException.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function findAllOpenAPI() {
   return applyDecorators(
@@ -17,7 +17,7 @@ export function findAllOpenAPI() {
     ApiNotFoundResponse({
       status: 404,
       description: 'NotFoundException',
-      type: NotFoundExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({
       operationId: 'findAllApplications',

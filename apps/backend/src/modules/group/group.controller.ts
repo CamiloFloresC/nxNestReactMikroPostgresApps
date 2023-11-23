@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
 import { GroupService } from './group.service';
 import { CreateGroupDto } from './dto/create-group.dto';
@@ -20,8 +21,10 @@ import {
 } from './openAPI-decorators';
 import { GetGroupDto } from './dto/get-group.dto';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
+import { HttpExceptionFilter } from '../../filters/HttpException.filter';
 
 @ApiTags('group')
+@UseFilters(HttpExceptionFilter)
 @Controller('group')
 export class GroupController {
   constructor(private readonly groupService: GroupService) {}

@@ -4,8 +4,8 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { NotFoundExceptionDto } from '../../../dto/NotFoundException.dto';
 import { GetGroupDto } from '../dto/get-group.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function findAllOpenAPI() {
   return applyDecorators(
@@ -17,7 +17,7 @@ export function findAllOpenAPI() {
     ApiNotFoundResponse({
       status: 404,
       description: 'NotFoundException',
-      type: NotFoundExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({
       operationId: 'findAllGroups',

@@ -13,6 +13,7 @@ import { UpdateApplicationDto } from './dto/update-application.dto';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetApplicationDto } from './dto/get-application.dto';
+import { ErrorCreatingAppException } from './exceptions/ErorCreatingApp.exception';
 
 @Injectable()
 export class ApplicationService {
@@ -26,17 +27,6 @@ export class ApplicationService {
     createApplicationDto: CreateApplicationDto
   ): Promise<SuccessResponseDto> {
     try {
-      if (!createApplicationDto.client_id) {
-        throw new BadRequestException('client_id is required');
-      }
-
-      if (!createApplicationDto.name) {
-        throw new BadRequestException('name is required');
-      }
-
-      if (!createApplicationDto.description) {
-        throw new BadRequestException('description is required');
-      }
       const applicationverify = await this.appRepository.findOne({
         name: createApplicationDto.name,
       });
@@ -47,7 +37,7 @@ export class ApplicationService {
       try {
         await this.em.persist(create).flush();
       } catch (error) {
-        throw new BadRequestException('Error creating application');
+        throw new ErrorCreatingAppException('Error creating application', 400);
       }
 
       return {
@@ -56,9 +46,6 @@ export class ApplicationService {
       };
     } catch (error) {
       if (error instanceof ConflictException) {
-        throw error;
-      }
-      if (error instanceof BadRequestException) {
         throw error;
       }
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

@@ -7,10 +7,9 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { BadRequestExceptionDto } from '../../../dto/BadRequestException.dto';
-import { NotFoundExceptionDto } from '../../../dto/NotFoundException.dto';
 import { UpdateGroupDto } from '../dto/update-group.dto';
 import { SuccessResponseDto } from '../../../dto/success-response.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function updateOpenAPI() {
   return applyDecorators(
@@ -29,12 +28,12 @@ export function updateOpenAPI() {
     ApiBadRequestResponse({
       status: 400,
       description: 'BadRequestException',
-      type: BadRequestExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiNotFoundResponse({
       status: 404,
       description: 'NotFoundException',
-      type: NotFoundExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({
       operationId: 'updateGroupById',

@@ -1,4 +1,3 @@
-import { BadRequestExceptionDto } from '../../../dto/BadRequestException.dto';
 import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -7,6 +6,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { SuccessResponseDto } from '../../../dto/success-response.dto';
+import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
 
 export function deleteOpenAPI() {
   return applyDecorators(
@@ -22,7 +22,7 @@ export function deleteOpenAPI() {
     ApiBadRequestResponse({
       status: 400,
       description: 'BadRequestException',
-      type: BadRequestExceptionDto,
+      type: ErrorExecptionDto,
     }),
     ApiOperation({
       operationId: 'deleteApplicationById',
