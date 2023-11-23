@@ -13,7 +13,9 @@ import { UpdateApplicationDto } from './dto/update-application.dto';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetApplicationDto } from './dto/get-application.dto';
-import { ErrorCreatingAppException } from './exceptions/ErorCreatingApp.exception';
+import { ErrorCreatingAppException } from './exceptions/ErrorCreatingApp.exception';
+import { ErrorUpdatingAppException } from './exceptions/ErrorUpdatingApp.exception';
+import { ErrorDeletingAppException } from './exceptions/ErrorDeletingApp.exception';
 
 @Injectable()
 export class ApplicationService {
@@ -39,7 +41,6 @@ export class ApplicationService {
       } catch (error) {
         throw new ErrorCreatingAppException('Error creating application', 400);
       }
-
       return {
         message: 'Successfully created',
         status: 201,
@@ -110,17 +111,21 @@ export class ApplicationService {
       }
 
       if (!updateApplicationDto.name) {
-        throw new BadRequestException('name is required');
+        updateApplicationDto.name = application.name;
       }
 
       if (!updateApplicationDto.description) {
-        throw new BadRequestException('description is required');
+        updateApplicationDto.description = application.description;
       }
-      await this.appRepository.nativeUpdate(id, {
-        description: updateApplicationDto.description,
-        name: updateApplicationDto.name,
-        updatedAt: new Date(),
-      });
+      try {
+        await this.appRepository.nativeUpdate(id, {
+          description: updateApplicationDto.description,
+          name: updateApplicationDto.name,
+          updatedAt: new Date(),
+        });
+      } catch (error) {
+        throw new ErrorUpdatingAppException();
+      }
       return {
         message: 'Successfully update',
         status: 200,
@@ -142,7 +147,11 @@ export class ApplicationService {
       if (!application) {
         throw new NotFoundException('app not found');
       }
-      await this.em.getRepository(Application).nativeDelete(id);
+      try {
+        await this.em.getRepository(Application).nativeDelete(id);
+      } catch (error) {
+        throw new ErrorDeletingAppException();
+      }
       return {
         message: 'Successfully delete',
         status: 200,
@@ -169,7 +178,7 @@ export class ApplicationService {
           group: idGroup,
         });
       } catch (error) {
-        throw new BadRequestException(
+        throw new ErrorUpdatingAppException(
           'An error occurred while adding the group'
         );
       }
@@ -179,9 +188,6 @@ export class ApplicationService {
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error;
-      }
-      if (error instanceof BadRequestException) {
         throw error;
       }
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
@@ -212,7 +218,9 @@ export class ApplicationService {
           group: null,
         });
       } catch (error) {
-        throw new BadRequestException(error.message);
+        throw new ErrorUpdatingAppException(
+          'An error occurred while deleting the group'
+        );
       }
       return {
         message: 'Successfully delete Group',
@@ -220,9 +228,6 @@ export class ApplicationService {
       };
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error;
-      }
-      if (error instanceof BadRequestException) {
         throw error;
       }
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);

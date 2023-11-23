@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseFilters,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApplicationService } from './application.service';
 import { CreateApplicationDto } from './dto/create-application.dto';
@@ -49,20 +50,22 @@ export class ApplicationController {
 
   @findOneOpenAPI()
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<GetApplicationDto> {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GetApplicationDto> {
     return this.applicationService.findOne(id);
   }
 
   @findByGroupIdOpenAPI()
   @Get('group/:id')
-  findOneByGroupId(@Param('id') id: string): Promise<GetApplicationDto[]> {
+  findOneByGroupId(
+    @Param('id', ParseUUIDPipe) id: string
+  ): Promise<GetApplicationDto[]> {
     return this.applicationService.findOneByGroupId(id);
   }
 
   @updateOpenAPI()
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateApplicationDto: UpdateApplicationDto
   ): Promise<SuccessResponseDto> {
     return this.applicationService.update(id, updateApplicationDto);
@@ -70,14 +73,14 @@ export class ApplicationController {
 
   @deleteOpenAPI()
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<SuccessResponseDto> {
+  delete(@Param('id', ParseUUIDPipe) id: string): Promise<SuccessResponseDto> {
     return this.applicationService.remove(id);
   }
 
   @deleteAppFromAGroupOpenAPI()
   @Delete('group/:id')
   deleteAppFromAGroup(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() groupIdDto: GroupIdDto
   ): Promise<SuccessResponseDto> {
     return this.applicationService.deleteAppFromAGroup(id, groupIdDto.id);
@@ -86,7 +89,7 @@ export class ApplicationController {
   @addGroupOpenAPI()
   @Patch('group/:id')
   addGroup(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() groupIdDto: GroupIdDto
   ): Promise<SuccessResponseDto> {
     return this.applicationService.addGroup(id, groupIdDto.id);

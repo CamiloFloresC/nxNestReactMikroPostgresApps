@@ -20,6 +20,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (Array.isArray(errorMessage)) {
       errorMessage = errorMessage.join(', ');
     }
+    if (errorMessage === undefined) {
+      errorMessage = exception.getResponse().toString();
+    }
     response.status(status).send({
       statusCode: status,
       error: errorMessage || 'Internal Server Error',

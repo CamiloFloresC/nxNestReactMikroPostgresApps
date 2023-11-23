@@ -13,6 +13,9 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetGroupDto } from './dto/get-group.dto';
+import { ErrorUpdatingGroupException } from './exceptions/ErrorUpdatingGroup.exception';
+import { ErrorCreatingGroupException } from './exceptions/ErrorCreatingGroupException';
+import { ErrorDeletingGroupException } from './exceptions/ErrorDeletingGroup.exception';
 
 @Injectable()
 export class GroupService {
@@ -30,11 +33,11 @@ export class GroupService {
         throw new ConflictException('This group already exists');
       }
       const create = this.groupRepository.create(createGroupDto);
-      if (!create) {
-        throw new BadRequestException('Error creating application');
+      try {
+        await this.em.persist(create).flush();
+      } catch (error) {
+        throw new ErrorCreatingGroupException();
       }
-
-      await this.em.persist(create).flush();
 
       return {
         message: 'Successfully created',
@@ -92,17 +95,21 @@ export class GroupService {
       }
 
       if (!updateGroupDto.name) {
-        throw new BadRequestException('name is required');
+        updateGroupDto.name = group.name;
       }
 
       if (!updateGroupDto.description) {
-        throw new BadRequestException('description is required');
+        updateGroupDto.description = group.description;
       }
-      await this.groupRepository.nativeUpdate(id, {
-        description: updateGroupDto.description,
-        name: updateGroupDto.name,
-        updatedAt: new Date(),
-      });
+      try {
+        await this.groupRepository.nativeUpdate(id, {
+          description: updateGroupDto.description,
+          name: updateGroupDto.name,
+          updatedAt: new Date(),
+        });
+      } catch (error) {
+        throw new ErrorUpdatingGroupException('Error updating group');
+      }
       return {
         message: 'Successfully update',
         status: 200,
@@ -124,8 +131,11 @@ export class GroupService {
       if (!group) {
         throw new NotFoundException('group not found');
       }
-      await this.em.getRepository(Group).nativeDelete(id);
-
+      try {
+        await this.em.getRepository(Group).nativeDelete(id);
+      } catch (error) {
+        throw new ErrorDeletingGroupException();
+      }
       return {
         message: 'Successfully delete',
         status: 200,
