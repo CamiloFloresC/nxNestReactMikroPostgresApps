@@ -13,6 +13,7 @@ import { v4 } from 'uuid';
 export class Group {
   @PrimaryKey()
   id: string = v4();
+
   @Property({ unique: true })
   name: string;
 

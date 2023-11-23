@@ -6,6 +6,7 @@ export class UpdateApplicationDto {
   @ApiPropertyOptional()
   @IsString()
   name: string;
+
   @IsOptional()
   @ApiPropertyOptional()
   @IsString()

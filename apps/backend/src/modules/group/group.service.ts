@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -52,7 +54,7 @@ export class GroupService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -67,7 +69,7 @@ export class GroupService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -82,7 +84,7 @@ export class GroupService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -119,7 +121,7 @@ export class GroupService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -139,7 +141,7 @@ export class GroupService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

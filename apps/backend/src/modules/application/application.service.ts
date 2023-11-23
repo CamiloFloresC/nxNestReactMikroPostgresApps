@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -42,14 +44,10 @@ export class ApplicationService {
         throw new ConflictException('This application already exists');
       }
       const create = this.appRepository.create(createApplicationDto);
-      if (!create) {
-        throw new BadRequestException('Error creating application');
-      }
-
       try {
         await this.em.persist(create).flush();
       } catch (error) {
-        throw new BadRequestException(error.message);
+        throw new BadRequestException('Error creating application');
       }
 
       return {
@@ -63,7 +61,7 @@ export class ApplicationService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -78,7 +76,7 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -93,7 +91,7 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -110,7 +108,7 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -147,7 +145,7 @@ export class ApplicationService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -166,7 +164,7 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -184,7 +182,9 @@ export class ApplicationService {
           group: idGroup,
         });
       } catch (error) {
-        throw new BadRequestException(error.message);
+        throw new BadRequestException(
+          'An error occurred while adding the group'
+        );
       }
       return {
         message: 'Successfully add Group',
@@ -197,7 +197,7 @@ export class ApplicationService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -238,7 +238,7 @@ export class ApplicationService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new Error(error);
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

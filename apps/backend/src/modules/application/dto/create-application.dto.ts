@@ -6,14 +6,17 @@ export class CreateApplicationDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   client_id: string;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   description: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
