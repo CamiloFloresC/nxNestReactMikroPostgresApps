@@ -68,6 +68,9 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "dependsOn": ["generate-openapi", "generate-client"],
+      "options": {
+        "buildTarget": "backend:build"
+      },
       "configurations": {
         "development": {
           "buildTarget": "backend:build:development"
