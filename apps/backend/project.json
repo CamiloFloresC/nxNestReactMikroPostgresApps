@@ -64,6 +64,16 @@
         }
       }
     },
+    "generate-openapi:client": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["generate-openapi", "generate-client"],
+      "configurations": {
+        "development": {
+          "buildTarget": "backend:build:development"
+        }
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
