@@ -59,7 +59,7 @@ export class ApplicationService {
       if (!applications) {
         throw new NotFoundException('List of apps not found');
       }
-      return applications;
+      return applications.map(this.mapApplicationToDto);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -74,7 +74,7 @@ export class ApplicationService {
       if (!application) {
         throw new NotFoundException('app not found');
       }
-      return application;
+      return this.mapApplicationToDto(application);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -91,7 +91,7 @@ export class ApplicationService {
       if (!applications) {
         throw new NotFoundException('List of apps not found');
       }
-      return applications;
+      return applications.map(this.mapApplicationToDto);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
@@ -232,5 +232,16 @@ export class ApplicationService {
       }
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
+  }
+  private mapApplicationToDto(application: Application): GetApplicationDto {
+    return {
+      id: application.id,
+      name: application.name,
+      description: application.description,
+      createdAt: application.createdAt,
+      updatedAt: application.updatedAt,
+      client_id: application.client_id,
+      group: application.group ? application.group.id : null,
+    };
   }
 }
