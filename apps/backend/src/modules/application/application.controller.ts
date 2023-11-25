@@ -14,7 +14,6 @@ import { CreateApplicationDto } from './dto/create-application.dto';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { ApiTags } from '@nestjs/swagger';
 import {
-  addGroupOpenAPI,
   createOpenAPI,
   deleteOpenAPI,
   findAllOpenAPI,
@@ -23,9 +22,7 @@ import {
 } from './openAPI-decorators';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetApplicationDto } from './dto/get-application.dto';
-import { GroupIdDto } from './dto/group-id.dto';
 import { findByGroupIdOpenAPI } from './openAPI-decorators/findByGroupId';
-import { deleteAppFromAGroupOpenAPI } from './openAPI-decorators/deleteAppFromAGroup';
 import { HttpExceptionFilter } from '../../filters/HttpException.filter';
 
 @ApiTags('application')
@@ -74,24 +71,6 @@ export class ApplicationController {
   @deleteOpenAPI()
   @Delete(':id')
   delete(@Param('id', ParseUUIDPipe) id: string): Promise<SuccessResponseDto> {
-    return this.applicationService.remove(id);
-  }
-
-  @deleteAppFromAGroupOpenAPI()
-  @Delete('group/:id')
-  deleteAppFromAGroup(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() groupIdDto: GroupIdDto
-  ): Promise<SuccessResponseDto> {
-    return this.applicationService.deleteAppFromAGroup(id, groupIdDto.id);
-  }
-
-  @addGroupOpenAPI()
-  @Patch('group/:id')
-  addGroup(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() groupIdDto: GroupIdDto
-  ): Promise<SuccessResponseDto> {
-    return this.applicationService.addGroup(id, groupIdDto.id);
+    return this.applicationService.delete(id);
   }
 }

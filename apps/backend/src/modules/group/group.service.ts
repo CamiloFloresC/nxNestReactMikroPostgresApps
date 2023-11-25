@@ -9,32 +9,33 @@ import {
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { Group } from './entities/group.entity';
-import { InjectRepository } from '@mikro-orm/nestjs';
-import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import { EntityManager } from '@mikro-orm/postgresql';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetGroupDto } from './dto/get-group.dto';
 import { ErrorUpdatingGroupException } from './exceptions/ErrorUpdatingGroup.exception';
 import { ErrorCreatingGroupException } from './exceptions/ErrorCreatingGroupException';
 import { ErrorDeletingGroupException } from './exceptions/ErrorDeletingGroup.exception';
+import { ApplicationIdDto } from './dto/ApplicationIdDto.dto';
+import { Application } from '../application/entities/application.entity';
 
 @Injectable()
 export class GroupService {
-  constructor(
-    @InjectRepository(Group)
-    private readonly groupRepository: EntityRepository<Group>,
-    private readonly em: EntityManager
-  ) {}
+  constructor(private readonly entityManager: EntityManager) {}
   async create(createGroupDto: CreateGroupDto): Promise<SuccessResponseDto> {
     try {
-      const applicationverify = await this.groupRepository.findOne({
-        name: createGroupDto.name,
-      });
+      const applicationverify = await this.entityManager
+        .getRepository(Group)
+        .findOne({
+          name: createGroupDto.name,
+        });
       if (applicationverify) {
         throw new ConflictException('This group already exists');
       }
-      const create = this.groupRepository.create(createGroupDto);
+      const created = this.entityManager
+        .getRepository(Group)
+        .create(createGroupDto);
       try {
-        await this.em.persist(create).flush();
+        await this.entityManager.persistAndFlush(created);
       } catch (error) {
         throw new ErrorCreatingGroupException();
       }
@@ -56,7 +57,7 @@ export class GroupService {
 
   async findAll(): Promise<GetGroupDto[]> {
     try {
-      const groups = await this.groupRepository.findAll();
+      const groups = await this.entityManager.getRepository(Group).findAll();
       if (!groups) {
         throw new NotFoundException('List of groups not found');
       }
@@ -71,7 +72,7 @@ export class GroupService {
 
   async findOne(id: string): Promise<GetGroupDto> {
     try {
-      const group = await this.groupRepository.findOne(id);
+      const group = await this.entityManager.getRepository(Group).findOne(id);
       if (!group) {
         throw new NotFoundException('group not found');
       }
@@ -89,7 +90,7 @@ export class GroupService {
     updateGroupDto: UpdateGroupDto
   ): Promise<SuccessResponseDto> {
     try {
-      const group = await this.groupRepository.findOne(id);
+      const group = await this.entityManager.getRepository(Group).findOne(id);
       if (!group) {
         throw new NotFoundException('group not found');
       }
@@ -102,7 +103,7 @@ export class GroupService {
         updateGroupDto.description = group.description;
       }
       try {
-        await this.groupRepository.nativeUpdate(id, {
+        await this.entityManager.getRepository(Group).nativeUpdate(id, {
           description: updateGroupDto.description,
           name: updateGroupDto.name,
           updatedAt: new Date(),
@@ -125,14 +126,90 @@ export class GroupService {
     }
   }
 
-  async remove(id: string): Promise<SuccessResponseDto> {
+  async addApplication(
+    id: string,
+    applicationIdDto: ApplicationIdDto
+  ): Promise<SuccessResponseDto> {
     try {
-      const group = await this.groupRepository.findOne(id);
+      const group = await this.entityManager.getRepository(Group).findOne(id);
+      if (!group) {
+        throw new NotFoundException('group not found');
+      }
+      const applicationverify = group.applications.find(
+        (app) => app.id === applicationIdDto.id
+      );
+      if (applicationverify) {
+        throw new NotFoundException('this application already exists');
+      }
+      const application = await this.entityManager
+        .getRepository(Application)
+        .find(applicationIdDto.id);
+      try {
+        group.applications.add(application);
+        await this.entityManager.persistAndFlush(group);
+      } catch (error) {
+        throw new ErrorUpdatingGroupException('error add application');
+      }
+      return {
+        message: 'Successfully add Application',
+        status: 200,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof ErrorUpdatingGroupException) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async deleteApplication(
+    id: string,
+    applicationIdDto: ApplicationIdDto
+  ): Promise<SuccessResponseDto> {
+    try {
+      const group = await this.entityManager.getRepository(Group).findOne(id);
+      if (!group) {
+        throw new NotFoundException('group not found');
+      }
+      const applicationToRemove = group.applications.find(
+        (app) => app.id === applicationIdDto.id
+      );
+      if (!applicationToRemove) {
+        throw new NotFoundException('Application not found in the group');
+      }
+
+      group.applications.remove(applicationToRemove);
+      try {
+        await this.entityManager.persistAndFlush(group);
+      } catch (error) {
+        throw new ErrorUpdatingGroupException('error deleting application');
+      }
+      return {
+        message: 'Successfully delete Application',
+        status: 200,
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof ErrorUpdatingGroupException) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async delete(id: string): Promise<SuccessResponseDto> {
+    try {
+      const group = await this.entityManager.getRepository(Group).findOne(id);
       if (!group) {
         throw new NotFoundException('group not found');
       }
       try {
-        await this.em.getRepository(Group).nativeDelete(id);
+        await this.entityManager.getRepository(Group).nativeDelete(id);
       } catch (error) {
         throw new ErrorDeletingGroupException();
       }

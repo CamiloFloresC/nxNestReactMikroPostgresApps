@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateApplicationDto {
   @ApiProperty()
@@ -10,15 +10,5 @@ export class CreateApplicationDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  client_id: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
   description: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  group: string;
 }

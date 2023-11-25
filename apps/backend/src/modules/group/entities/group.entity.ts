@@ -2,7 +2,7 @@ import {
   Cascade,
   Collection,
   Entity,
-  OneToMany,
+  ManyToMany,
   PrimaryKey,
   Property,
 } from '@mikro-orm/core';
@@ -29,8 +29,10 @@ export class Group {
   })
   updatedAt: Date;
 
-  @OneToMany(() => Application, (a) => a.group, {
+  @ManyToMany(() => Application, 'groups', {
     cascade: [Cascade.ALL],
+    owner: true,
+    eager: true,
   })
   applications = new Collection<Application>(this);
 }

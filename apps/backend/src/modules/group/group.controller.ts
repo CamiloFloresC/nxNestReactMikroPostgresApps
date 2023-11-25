@@ -19,10 +19,13 @@ import {
   findOneOpenAPI,
   updateOpenAPI,
   deleteOpenAPI,
+  addApplicationOpenAPI,
+  deleteApplicationOpenAPI,
 } from './openAPI-decorators';
 import { GetGroupDto } from './dto/get-group.dto';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { HttpExceptionFilter } from '../../filters/HttpException.filter';
+import { ApplicationIdDto } from './dto/ApplicationIdDto.dto';
 
 @ApiTags('group')
 @UseFilters(HttpExceptionFilter)
@@ -56,10 +59,26 @@ export class GroupController {
   ): Promise<SuccessResponseDto> {
     return this.groupService.update(id, updateGroupDto);
   }
+  @addApplicationOpenAPI()
+  @Post('application/:id')
+  addApplication(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() applicationIdDto: ApplicationIdDto
+  ): Promise<SuccessResponseDto> {
+    return this.groupService.addApplication(id, applicationIdDto);
+  }
+  @deleteApplicationOpenAPI()
+  @Delete('application/:id')
+  deleteApplication(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() applicationIdDto: ApplicationIdDto
+  ): Promise<SuccessResponseDto> {
+    return this.groupService.deleteApplication(id, applicationIdDto);
+  }
 
   @deleteOpenAPI()
   @Delete(':id')
   delete(@Param('id', ParseUUIDPipe) id: string): Promise<SuccessResponseDto> {
-    return this.groupService.remove(id);
+    return this.groupService.delete(id);
   }
 }

@@ -1,10 +1,10 @@
 import {
   Cascade,
+  Collection,
   Entity,
-  ManyToOne,
+  ManyToMany,
   PrimaryKey,
   Property,
-  Ref,
 } from '@mikro-orm/core';
 import { Group } from '../../group/entities/group.entity';
 import { v4 } from 'uuid';
@@ -29,11 +29,8 @@ export class Application {
   })
   updatedAt: Date;
 
-  @Property()
-  client_id: string;
-
-  @ManyToOne(() => Group, {
+  @ManyToMany(() => Group, 'applications', {
     cascade: [Cascade.ALL],
   })
-  group?: Ref<Group>;
+  groups = new Collection<Group>(this);
 }
