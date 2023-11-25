@@ -8,6 +8,7 @@ import { Group } from '../modules/group/entities/group.entity';
     ConfigModule.forRoot({ isGlobal: true }),
     MikroOrmModule.forRoot({
       entities: [Application, Group],
+      entitiesTs: [Application, Group],
       type: 'postgresql',
       port: 5432,
       user: process.env.USER_DB,
