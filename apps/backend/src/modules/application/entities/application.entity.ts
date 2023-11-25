@@ -1,5 +1,4 @@
 import {
-  Cascade,
   Collection,
   Entity,
   ManyToMany,
@@ -29,8 +28,6 @@ export class Application {
   })
   updatedAt: Date;
 
-  @ManyToMany(() => Group, 'applications', {
-    cascade: [Cascade.ALL],
-  })
+  @ManyToMany(() => Group, 'applications')
   groups = new Collection<Group>(this);
 }

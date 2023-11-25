@@ -1,5 +1,4 @@
 import {
-  Cascade,
   Collection,
   Entity,
   ManyToMany,
@@ -30,7 +29,6 @@ export class Group {
   updatedAt: Date;
 
   @ManyToMany(() => Application, 'groups', {
-    cascade: [Cascade.ALL],
     owner: true,
     eager: true,
   })

@@ -48,7 +48,10 @@ export class ApplicationService {
       if (error instanceof ConflictException) {
         throw error;
       }
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST
+      );
     }
   }
 
@@ -65,7 +68,10 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST
+      );
     }
   }
 
@@ -82,7 +88,10 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST
+      );
     }
   }
 
@@ -101,7 +110,10 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST
+      );
     }
   }
 
@@ -144,7 +156,10 @@ export class ApplicationService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST
+      );
     }
   }
 
@@ -169,7 +184,10 @@ export class ApplicationService {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.BAD_REQUEST
+      );
     }
   }
 
