@@ -12,7 +12,6 @@ export class Group extends BaseEntity {
 
   @ManyToMany(() => Application, 'groups', {
     owner: true,
-    eager: true,
   })
   applications = new Collection<Application>(this);
 }

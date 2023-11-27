@@ -10,6 +10,6 @@ export class Application extends BaseEntity {
   @Property()
   description: string;
 
-  @ManyToMany(() => Group, 'applications')
+  @ManyToMany(() => Group, (g) => g.applications)
   groups = new Collection<Group>(this);
 }

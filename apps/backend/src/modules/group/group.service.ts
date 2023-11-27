@@ -146,6 +146,7 @@ export class GroupService {
       if (!group) {
         throw new NotFoundException('group not found');
       }
+      await group.applications.init();
       const applicationverify = group.applications.find(
         (app) => app.id === applicationIdDto.id
       );
@@ -155,8 +156,8 @@ export class GroupService {
       const application = await this.entityManager
         .getRepository(Application)
         .findOne(applicationIdDto.id);
+      group.applications.add(application);
       try {
-        group.applications.add(application);
         await this.entityManager.persistAndFlush(group);
       } catch (error) {
         throw new ErrorUpdatingGroupException('error add application');
@@ -188,6 +189,7 @@ export class GroupService {
       if (!group) {
         throw new NotFoundException('group not found');
       }
+      await group.applications.init();
       const applicationToRemove = group.applications.find(
         (app) => app.id === applicationIdDto.id
       );
