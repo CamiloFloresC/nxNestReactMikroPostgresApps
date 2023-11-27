@@ -5,8 +5,8 @@ import {
   ApiParam,
   ApiResponse,
 } from '@nestjs/swagger';
-import { GetApplicationDto } from '../dto/get-application.dto';
 import { ErrorExecptionDto } from '../../../dto/ErrorException.dto';
+import { GetApplicationByIdDto } from '../dto/get-application-by-id.dto';
 
 export function findOneOpenAPI() {
   return applyDecorators(
@@ -17,7 +17,7 @@ export function findOneOpenAPI() {
     ApiResponse({
       status: 200,
       description: 'find application by id',
-      type: GetApplicationDto,
+      type: GetApplicationByIdDto,
     }),
     ApiNotFoundResponse({
       status: 404,

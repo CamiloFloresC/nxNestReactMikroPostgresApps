@@ -7,7 +7,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateApplicationDto } from './dto/create-application.dto';
-import { Application } from './entities/application.entity';
 import { UpdateApplicationDto } from './dto/update-application.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
@@ -15,6 +14,8 @@ import { GetApplicationDto } from './dto/get-application.dto';
 import { ErrorCreatingAppException } from './exceptions/ErrorCreatingApp.exception';
 import { ErrorUpdatingAppException } from './exceptions/ErrorUpdatingApp.exception';
 import { ErrorDeletingAppException } from './exceptions/ErrorDeletingApp.exception';
+import { GetApplicationByIdDto } from './dto/get-application-by-id.dto';
+import { Group, Application } from '../../entities';
 
 @Injectable()
 export class ApplicationService {
@@ -47,11 +48,12 @@ export class ApplicationService {
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -63,19 +65,20 @@ export class ApplicationService {
       if (!applications) {
         throw new NotFoundException('List of apps not found');
       }
-      return applications.map(this.mapApplicationToDto);
+      return applications;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
-  async findOne(id: string): Promise<GetApplicationDto> {
+  async findOne(id: string): Promise<GetApplicationByIdDto> {
     try {
       const application = await this.entityManager
         .getRepository(Application)
@@ -83,19 +86,30 @@ export class ApplicationService {
       if (!application) {
         throw new NotFoundException('app not found');
       }
-      return this.mapApplicationToDto(application);
+      const groups = await this.entityManager.getRepository(Group).find({
+        applications: id,
+      });
+      return {
+        id: application.id,
+        name: application.name,
+        description: application.description,
+        createdAt: application.createdAt,
+        updatedAt: application.updatedAt,
+        numberOfGroups: groups.length,
+      };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
-  async findOneByGroupId(idGroup: string): Promise<GetApplicationDto[]> {
+  async findByGroupId(idGroup: string): Promise<GetApplicationDto[]> {
     try {
       const applications = await this.entityManager
         .getRepository(Application)
@@ -105,15 +119,16 @@ export class ApplicationService {
       if (!applications) {
         throw new NotFoundException('List of apps not found');
       }
-      return applications.map(this.mapApplicationToDto);
+      return applications;
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -137,11 +152,10 @@ export class ApplicationService {
         updateApplicationDto.description = application.description;
       }
       try {
-        await this.entityManager.getRepository(Application).nativeUpdate(id, {
-          description: updateApplicationDto.description,
-          name: updateApplicationDto.name,
-          updatedAt: new Date(),
-        });
+        application.name = updateApplicationDto.name || application.name;
+        application.description =
+          updateApplicationDto.description || application.description;
+        await this.entityManager.persistAndFlush(application);
       } catch (error) {
         throw new ErrorUpdatingAppException();
       }
@@ -152,14 +166,12 @@ export class ApplicationService {
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -183,21 +195,12 @@ export class ApplicationService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
-  }
-
-  private mapApplicationToDto(application: Application): GetApplicationDto {
-    return {
-      id: application.id,
-      name: application.name,
-      description: application.description,
-      createdAt: application.createdAt,
-      updatedAt: application.updatedAt,
-    };
   }
 }

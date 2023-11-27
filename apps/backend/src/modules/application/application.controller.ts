@@ -24,6 +24,7 @@ import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetApplicationDto } from './dto/get-application.dto';
 import { findByGroupIdOpenAPI } from './openAPI-decorators/findByGroupId';
 import { HttpExceptionFilter } from '../../filters/HttpException.filter';
+import { GetApplicationByIdDto } from './dto/get-application-by-id.dto';
 
 @ApiTags('application')
 @UseFilters(HttpExceptionFilter)
@@ -47,16 +48,18 @@ export class ApplicationController {
 
   @findOneOpenAPI()
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GetApplicationDto> {
+  findOne(
+    @Param('id', ParseUUIDPipe) id: string
+  ): Promise<GetApplicationByIdDto> {
     return this.applicationService.findOne(id);
   }
 
   @findByGroupIdOpenAPI()
   @Get('group/:id')
-  findOneByGroupId(
+  findByGroupId(
     @Param('id', ParseUUIDPipe) id: string
   ): Promise<GetApplicationDto[]> {
-    return this.applicationService.findOneByGroupId(id);
+    return this.applicationService.findByGroupId(id);
   }
 
   @updateOpenAPI()

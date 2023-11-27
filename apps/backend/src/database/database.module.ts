@@ -1,8 +1,8 @@
 import { MikroOrmModule, logger } from '@mikro-orm/nestjs';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { Application } from '../modules/application/entities/application.entity';
-import { Group } from '../modules/group/entities/group.entity';
+import { Application } from '../entities/application.entity';
+import { Group } from '../entities/group.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -17,6 +17,9 @@ import { Group } from '../modules/group/entities/group.entity';
       debug: true,
       logger: logger.log.bind(logger),
       persistOnCreate: true,
+    }),
+    MikroOrmModule.forFeature({
+      entities: [Application, Group],
     }),
   ],
 })

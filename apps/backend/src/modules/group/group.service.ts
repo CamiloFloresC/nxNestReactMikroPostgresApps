@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { Group } from './entities/group.entity';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { SuccessResponseDto } from '../../dto/success-response.dto';
 import { GetGroupDto } from './dto/get-group.dto';
@@ -16,7 +15,7 @@ import { ErrorUpdatingGroupException } from './exceptions/ErrorUpdatingGroup.exc
 import { ErrorCreatingGroupException } from './exceptions/ErrorCreatingGroupException';
 import { ErrorDeletingGroupException } from './exceptions/ErrorDeletingGroup.exception';
 import { ApplicationIdDto } from './dto/ApplicationIdDto.dto';
-import { Application } from '../application/entities/application.entity';
+import { Application, Group } from '../../entities';
 
 @Injectable()
 export class GroupService {
@@ -47,14 +46,14 @@ export class GroupService {
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
-      }
-      if (error instanceof BadRequestException) {
+      } else if (error instanceof BadRequestException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -68,11 +67,12 @@ export class GroupService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -86,11 +86,12 @@ export class GroupService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -112,11 +113,9 @@ export class GroupService {
         updateGroupDto.description = group.description;
       }
       try {
-        await this.entityManager.getRepository(Group).nativeUpdate(id, {
-          description: updateGroupDto.description,
-          name: updateGroupDto.name,
-          updatedAt: new Date(),
-        });
+        group.name = updateGroupDto.name || group.name;
+        group.description = updateGroupDto.description || group.description;
+        await this.entityManager.persistAndFlush(group);
       } catch (error) {
         throw new ErrorUpdatingGroupException('Error updating group');
       }
@@ -127,14 +126,14 @@ export class GroupService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
-      }
-      if (error instanceof BadRequestException) {
+      } else if (error instanceof BadRequestException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -155,7 +154,7 @@ export class GroupService {
       }
       const application = await this.entityManager
         .getRepository(Application)
-        .find(applicationIdDto.id);
+        .findOne(applicationIdDto.id);
       try {
         group.applications.add(application);
         await this.entityManager.persistAndFlush(group);
@@ -169,14 +168,14 @@ export class GroupService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
-      }
-      if (error instanceof ErrorUpdatingGroupException) {
+      } else if (error instanceof ErrorUpdatingGroupException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -196,8 +195,8 @@ export class GroupService {
         throw new NotFoundException('Application not found in the group');
       }
 
-      group.applications.remove(applicationToRemove);
       try {
+        group.applications.remove(applicationToRemove);
         await this.entityManager.persistAndFlush(group);
       } catch (error) {
         throw new ErrorUpdatingGroupException('error deleting application');
@@ -209,14 +208,14 @@ export class GroupService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
-      }
-      if (error instanceof ErrorUpdatingGroupException) {
+      } else if (error instanceof ErrorUpdatingGroupException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 
@@ -238,11 +237,12 @@ export class GroupService {
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          error.status || HttpStatus.BAD_REQUEST
+        );
       }
-      throw new HttpException(
-        error.message,
-        error.status || HttpStatus.BAD_REQUEST
-      );
     }
   }
 }
